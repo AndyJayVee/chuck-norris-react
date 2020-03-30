@@ -45,9 +45,7 @@ class JokeHttpClient
     {
         $HttpResponse = $this->client->request('POST', 'http://api.icndb.com/jokes/'.$joke_id);
         $jsonString = $HttpResponse->getContent();
-        $array = json_decode($jsonString, true);
-        $jsonString = $array['value'];
-
-        return $jsonString;
+        $joke = json_decode($jsonString, true);
+        return $joke['value'];
     }
 }

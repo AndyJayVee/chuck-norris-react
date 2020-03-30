@@ -1,25 +1,27 @@
-### _Set up this project_
+### Set up this project
 
-**Database:**
+**_Database_:**
 
 First set up a mysql -v5.7 database named chuck_norris_jokes on channel 3306\
 user = root, no password
 
+**_Dependencies_:**
 
-**Run the server:**
+composer install
+
+**_Run the server_:**
 
 symfony server:start\
-yarn run\
-dev-server\
+yarn run dev-server\
 (if needed run npm install yarn)
 
-**Run the migrations:**
+**_Run the migrations_:**
 
 php bin/console make:migration\
 php bin/console doctrine:migrations:migrate
 
 
-**Routes:**
+**_Routes_:**
 
 Root of the project:\
 localhost:8000
