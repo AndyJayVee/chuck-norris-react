@@ -1,14 +1,15 @@
 version: "3.1"
 services:
   database:
-    image: mariadb:10.1
+    build: docker/database
     container_name: mariadb
     environment:
-      - MYSQL_DATABASE= chuck_norris_jokes
-      - MYSQL_USER= root
-      - MYSQL_ALLOW_EMPTY_PASSWORD= 'yes'
+      - MYSQL_DATABASE= chuck-norris-jokes
+      - MYSQL_USER= chuck
+      - DATABASE_PASSWORD= root
+      - DATABASE_ROOT_PASSWORD= root
     ports:
-      - "8083:3306"
+      - "3306:33060"
   web:
     build: docker/php-apache2
     container_name: web
@@ -16,3 +17,5 @@ services:
       - .:/var/www/html
     ports:
       - "8000:80"
+    links:
+      - database
