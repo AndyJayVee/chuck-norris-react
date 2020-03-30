@@ -24,9 +24,7 @@ services:
     build: php-fpm
     container_name: cn-php
     volumes:
-      - ./src:/var/www/src
-      - ./assets:/var/www/assets
-      - ./templates:/var/www/assets
+      - ./:/var/www/html
       - ./logs/www:/var/log
       - ./logs/xdebug/:/var/log/xdebug
     #  - ./php7-fpm/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
@@ -45,7 +43,7 @@ services:
     build: nginx
     container_name: cn-nginx
     ports:
-      - 8080:80
+      - 8000:80
       - 443:443
     volumes_from:
       - php
