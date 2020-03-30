@@ -1,18 +1,55 @@
-version: "3.1"
+version: '2'
+
+networks:
+  default:
+    driver: bridge
+
 services:
-  database:
-    image: mariadb:10.1
-    container_name: mariadb
+  db:
+    container_name: cn-db
+    image: mysql:5.6.42
+    ports:
+      - "33062:3306"
     environment:
-      - MYSQL_DATABASE= chuck_norris_jokes
-      - MYSQL_USER= root
-      - MYSQL_ALLOW_EMPTY_PASSWORD= 'yes'
-    ports:
-      - "8083:3306"
-  web:
-    build: docker/php-apache2
-    container_name: web
+      MYSQL_USER: chuck
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
     volumes:
-      - .:/var/www/html
+      - ./data:/var/lib/mysql
+      - ./mysql/cb.cnf:/etc/mysql/conf.d/cb.cnf
+    networks:
+      - default
+
+  php:
+    build: php-fpm
+    container_name: cn-php
+    volumes:
+      - ./src:/var/www/src
+      - ./assets:/var/www/assets
+      - ./templates:/var/www/assets
+      - ./logs/www:/var/log
+      - ./logs/xdebug/:/var/log/xdebug
+    #  - ./php7-fpm/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+    networks:
+      - default
+    environment:
+      DATABASE_HOST: db
+      DATABASE_PORT: 3306
+      DATABASE_NAME: chuck-norris-jokes
+      DATABASE_USER: root
+      DATABASE_PASSWORD: root
+    links:
+      - db
+
+  nginx:
+    build: nginx
+    container_name: cn-nginx
     ports:
-      - "8000:80"
+      - 8080:80
+      - 443:443
+    volumes_from:
+      - php
+    volumes:
+      - ./logs/nginx/:/var/log/nginx
+    networks:
+      - default
