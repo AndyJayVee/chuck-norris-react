@@ -13,7 +13,7 @@ class Favorites extends Component {
     }
 
     getFavorites() {
-        axios.get("http://localhost:8000/api/favorites").then(result => {
+        axios.get("https://localhost:8000/api/favorites").then(result => {
             const favorites = result.data;
             this.setState({ favorites, loading: false })
         })
@@ -34,7 +34,7 @@ class Favorites extends Component {
             method: 'GET'
             //TODO: change to DELETE, DELETE method has special treatment
         };
-        fetch("http://localhost:8000/api/remove/" + jokeId, requestOptions)
+        fetch("https://localhost:8000/api/remove/" + jokeId, requestOptions)
         .then(response => {
             if (response.status == "200") {
                 this.removeFavorite(jokeId);
