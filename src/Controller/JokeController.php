@@ -45,8 +45,12 @@ class JokeController
      * @Route("/save/{joke_id}", methods={"GET"}) //TODO: change back to PUT, research client side
      * @param int $joke_id
      * @return JsonResponse
+     * @throws ClientExceptionInterface
      * @throws NoResultException
      * @throws NonUniqueResultException
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
      */
     public function saveJokeToFavorites(int $joke_id)
     {
@@ -61,10 +65,11 @@ class JokeController
             $result = ['value' => 'maximum amount of favorite jokes reached'];
             $statusCode = 422;
         } else {
-            $joke = new FavoriteJoke;
-            $joke->setJokeId($joke_id);
-            $joke->setJoke("test");
-            $this->repository->save($joke);
+            $favoriteJoke = new FavoriteJoke();
+            $joke = $this->httpClient->getSingleJoke($joke_id);
+            $favoriteJoke->setJokeId($joke['id']);
+            $favoriteJoke->setJoke($joke['joke']);
+            $this->repository->save($favoriteJoke);
             $result = ['value' => 'joke saved'];
         }
         $response = new Response;
@@ -102,18 +107,18 @@ class JokeController
     /**
      * @Route("/favorites", methods={"GET"})
      * @return JsonResponse
-     * @throws ClientExceptionInterface
-     * @throws RedirectionExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws TransportExceptionInterface
      */
     public function listFavorites()
     {
         $jokes = $this->repository->findAll();
         $favoriteJokes = array();
         foreach ($jokes as $joke) {
-            $joke = $this->httpClient->getSingleJoke($joke->getJokeId());
-            $favoriteJokes[] = $joke;
+            $favoriteJoke = [
+                'joke_id' => $joke->getJokeId(),
+                'joke' => $joke->getJoke()
+                ]
+            ;
+            $favoriteJokes[] = $favoriteJoke;
         }
         $response = new Response;
         $response->headers->set('Content-Type', 'application/json');

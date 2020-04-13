@@ -13,7 +13,7 @@ class Favorites extends Component {
     }
 
     getFavorites() {
-        axios.get("http://localhost:8000/api/favorites").then(result => {
+        axios.get("https://localhost:8000/api/favorites").then(result => {
             const favorites = result.data;
             this.setState({ favorites, loading: false })
         })
@@ -21,7 +21,7 @@ class Favorites extends Component {
 
     removeFavorite(id) {
         const newState = this.state;
-        const index = newState.favorites.findIndex(a => a.id === id);
+        const index = newState.favorites.findIndex(a => a.joke_id === id);
 
         if (index === -1) return;
         newState.favorites.splice(index, 1);
@@ -29,15 +29,15 @@ class Favorites extends Component {
         this.setState(newState); // This will update the state and trigger a rerender of the components
     }
 
-    handleRemoveClick(userId) {
+    handleRemoveClick(jokeId) {
         const requestOptions = {
             method: 'GET'
             //TODO: change to DELETE, DELETE method has special treatment
         };
-        fetch("http://localhost:8000/api/remove/" + userId, requestOptions)
+        fetch("https://localhost:8000/api/remove/" + jokeId, requestOptions)
         .then(response => {
             if (response.status == "200") {
-                this.removeFavorite(userId);
+                this.removeFavorite(jokeId);
             } else if (response.status == "404")  {
                 alert("Joke is not a favorite.");
             } else alert("Error saving joke");
@@ -66,11 +66,11 @@ class Favorites extends Component {
                                             <li>
                                                 <div className="media">
                                                     <div className="media-body">
-                                                        <h4>{favorite.id}</h4>
+                                                        <h4>{favorite.joke_id}</h4>
                                                         <p>{favorite.joke.replace(/&quot;/g, '"')}</p>
                                                     </div>
                                                     <div className="media-right align-self-center">
-                                                        <button onClick={() => { this.handleRemoveClick(favorite.id) }} className="btn btn-default" >Remove</button>
+                                                        <button onClick={() => { this.handleRemoveClick(favorite.joke_id) }} className="btn btn-default" >Remove</button>
                                                     </div>
                                                 </div>
                                             </li>

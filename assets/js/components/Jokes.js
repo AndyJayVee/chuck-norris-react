@@ -13,7 +13,7 @@ class Jokes extends Component {
     }
 
     getJokes() {
-        axios.get("http://api.icndb.com/jokes/random/10").then(result => {
+        axios.get("https://api.icndb.com/jokes/random/10").then(result => {
             const jokes = result.data.value;
             this.setState({ jokes, loading: false })
         })
@@ -24,7 +24,7 @@ class Jokes extends Component {
             method: 'GET'
             //TODO: change to PUT, PUT method has special treatment
         };
-        fetch("http://localhost:8000/api/save/" + jokeId, requestOptions)
+        fetch("https://localhost:8000/api/save/" + jokeId, requestOptions)
             .then(response => {
                 if (response.status == "200") {
                     alert("Joke saved");
