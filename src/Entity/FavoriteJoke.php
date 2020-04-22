@@ -25,6 +25,11 @@ class FavoriteJoke
      */
     private $joke;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", cascade={"persist"})
+     */
+    private $user;
+
     public function getJokeId(): ?int
     {
         return $this->joke_id;
@@ -49,5 +54,16 @@ class FavoriteJoke
         return $this;
     }
 
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
 
 }
