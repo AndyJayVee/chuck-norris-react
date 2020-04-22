@@ -96,11 +96,6 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getSelf(): self
-    {
-        return $this;
-    }
-
     /**
      * @see UserInterface
      */

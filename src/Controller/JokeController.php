@@ -57,11 +57,11 @@ class JokeController
      */
     public function saveJokeToFavorites(int $joke_id, UserInterface $user)
     {
-        $criteria = ['joke_id' => ''];
+        $criteria = ['joke_id' => '', 'user' => $user];
         $amountFavoriteJokes = $this->repository->favoriteJokesAmount($criteria);
         $statusCode = 200;
 
-        if ($this->repository->find($joke_id)) {
+        if ($this->repository->findOneBy(['joke_id' => $joke_id, 'user' => $user])) {
             $result = ['value' => 'joke is already favorite'];
             $statusCode = 409;
         } else if ($amountFavoriteJokes == FavoriteJoke::MAXIMUM_AMOUNT_FAVORITES) {
@@ -72,7 +72,7 @@ class JokeController
             $joke = $this->httpClient->getSingleJoke($joke_id);
             $favoriteJoke->setJokeId($joke['id']);
             $favoriteJoke->setJoke($joke['joke']);
-            $favoriteJoke->setUser($user->getSelf());
+            $favoriteJoke->setUser($user);
             $this->repository->save($favoriteJoke);
             $result = ['value' => 'joke saved'];
         }
@@ -87,12 +87,13 @@ class JokeController
     /**
      * @Route("/remove/{joke_id}", methods={"GET"})//TODO: change back to DELETE, research client side
      * @param int $joke_id
+     * @param UserInterface $user
      * @return Response
      */
-    public function removeJokeFromFavorites(int $joke_id)
+    public function removeJokeFromFavorites(int $joke_id, UserInterface $user)
     {
         $statusCode = "200";
-        $joke = $this->repository->find($joke_id);
+        $joke = $this->repository->findOneBy(['joke_id' => $joke_id, 'user' => $user]);
         if (!$joke) {
             $result = ['value' => 'joke is not a favorite'];
             $statusCode = "404";
@@ -110,11 +111,13 @@ class JokeController
 
     /**
      * @Route("/favorites", methods={"GET"})
+     * @param UserInterface $user
      * @return JsonResponse
      */
-    public function listFavorites()
+    public function listFavorites(UserInterface $user)
     {
-        $jokes = $this->repository->findAll();
+//        $user = $user->getSelf();
+        $jokes = $this->repository->findBy(['user' => $user]);
         $favoriteJokes = array();
         foreach ($jokes as $joke) {
             $favoriteJoke = [

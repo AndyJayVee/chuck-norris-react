@@ -10,13 +10,19 @@ use Doctrine\ORM\Mapping as ORM;
 class FavoriteJoke
 {
     /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
      * int
      */
     public const MAXIMUM_AMOUNT_FAVORITES = 10;
 
     /**
      * @ORM\Column(name="joke_id", type="integer", nullable=false)
-     * @ORM\Id
      */
     private $joke_id;
 
@@ -29,6 +35,11 @@ class FavoriteJoke
      * @ORM\ManyToOne(targetEntity="App\Entity\User", cascade={"persist"})
      */
     private $user;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function getJokeId(): ?int
     {
