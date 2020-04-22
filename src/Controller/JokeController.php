@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 use App\Entity\FavoriteJoke;
+use App\Entity\User;
 use App\HttpClient\JokeHttpClient;
 use App\Repository\FavoriteJokeRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -11,6 +12,7 @@ use Doctrine\ORM\NoResultException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
@@ -44,6 +46,7 @@ class JokeController
     /**
      * @Route("/save/{joke_id}", methods={"GET"}) //TODO: change back to PUT, research client side
      * @param int $joke_id
+     * @param UserInterface $user
      * @return JsonResponse
      * @throws ClientExceptionInterface
      * @throws NoResultException
@@ -52,7 +55,7 @@ class JokeController
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    public function saveJokeToFavorites(int $joke_id)
+    public function saveJokeToFavorites(int $joke_id, UserInterface $user)
     {
         $criteria = ['joke_id' => ''];
         $amountFavoriteJokes = $this->repository->favoriteJokesAmount($criteria);
@@ -69,6 +72,7 @@ class JokeController
             $joke = $this->httpClient->getSingleJoke($joke_id);
             $favoriteJoke->setJokeId($joke['id']);
             $favoriteJoke->setJoke($joke['joke']);
+            $favoriteJoke->setUser($user->getSelf());
             $this->repository->save($favoriteJoke);
             $result = ['value' => 'joke saved'];
         }
