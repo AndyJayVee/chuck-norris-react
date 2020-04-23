@@ -29,10 +29,15 @@ php bin/console doctrine:migrations:migrate
 ```
 
 **_Open browser_:**
+
+https://localhost:8000\
+If that doesn't work use this symfony command:
+
 ```text
 symfony open:local
 ```
-(opens in https://127.0.0.1:8000)
+(opens on https://127.0.0.1:8000)\
+
 
 **_Routes_:**\
 Root of the project:\
