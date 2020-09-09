@@ -31,7 +31,6 @@ symfony server:start --port=8000
 **_Run the migrations_:**
 
 ```text
-php bin/console make:migration
 php bin/console doctrine:migrations:migrate
 ```
 
